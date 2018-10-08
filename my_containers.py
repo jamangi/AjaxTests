@@ -95,7 +95,7 @@ def drop():
                                                                         user_id, 
                                                                         file_obj))
     material = test_file(file_obj)
-    return jsonify({"material":material})
+    return jsonify({"material":material, "file_id":file_obj['id']})
 
 
 app.run(host='0.0.0.0', port=9090)
