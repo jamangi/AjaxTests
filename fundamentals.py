@@ -4,15 +4,18 @@ import uuid
 def copy_file(container_name, file_id, filename):
     """ will error if home directory is missing """
     try:
-        return subprocess.check_output(["docker","cp","work/{}".format(file_id),
+        subprocess.check_output(["docker","cp","work/{}".format(file_id),
                                  "{}:/home/{}".format(container_name, filename)])
+        return True
     except Exception as e:
+        print("Error in copy: {}".format(e))
         return None
 
 def extract_heart(container_name):
     try:
-        return subprocess.check_output(["docker","cp","{}:/home/heart".format(container_name),
-                                        "heartdump.txt"])
+        output = subprocess.check_output(["docker","cp","{}:/home/heart".format(container_name),
+                                          "heartdump.txt"])
+        return True
     except Exception as e:
         return None
 
@@ -20,7 +23,10 @@ def extract_heart(container_name):
 def execute_file(container_name, filename, filetype):
     try:
         output = subprocess.check_output(["docker", "exec", container_name, filetype, "/home/{}".format(filename)])
-        return output
+        if output:
+            return output
+        else:
+            return True
     except Exception as e:
         return None
 
@@ -41,7 +47,7 @@ def read_shebang(text):
 def create_file(user_id, filename, text):
     """ Create file in staging direcory """
     uid = str(uuid.uuid4())
-    new_file = {"id": uid, "user_id":user_id,
+    new_file = {"id": uid, "user_ip":user_id,
                 "filename": filename, "text": text,
                 "filetype": read_shebang(text)}
     with open("work/{}".format(new_file["id"]), mode="a", encoding="utf-8") as fd:

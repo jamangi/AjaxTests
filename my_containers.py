@@ -4,7 +4,7 @@ import docker
 import uuid
 import subprocess
 
-from fundamentals import copy_file, execute_file, extract_heart
+from fundamentals import create_file, copy_file, execute_file, extract_heart
 
 app = Flask(__name__)
 
@@ -14,19 +14,60 @@ def test_file(file_obj):
     testtube = client.containers.run('rubyshadows/heartbeat:v1', detach=True) 
 
     c_name = testtube.name
-    file_id = file_obj['uid']
+    print()
+    print("testtube name: {}".format(c_name))
+    file_id = file_obj['id']
     file_name = file_obj['filename']
     file_type = file_obj['filetype']
 
-    copy_file(c_name, file_id, filename)
-    execute_file(c_name, filename, filetype)
+    copy_good = copy_file(c_name, file_id, file_name)
+    if copy_good:
+        status = "success"
+    else:
+        status = "failure"
+    print("copy file {} inside container {} - {}".format(file_name, c_name, status))
+    exec_good = execute_file(c_name, file_name, file_type)
+    print()
+
+    if exec_good:
+        status = "success"
+    else:
+        status = "failure"
+    print("execute {} {} inside of container {} - {}".format(file_type, file_name, c_name, status))
+    print()
+
     responding = check_container(c_name)
     if responding:
+        status = "responding"
+    else:
+        status = "not responding"
+    print("container is {}".format(status))
+
+    if responding:
         has_heart = extract_heart(c_name)
-    else
+    else:
         has_heart = None
 
-    return (responding, has_heart)
+    print("container heart: {}".format(has_heart))
+
+    material = 0
+
+    if "python" in file_type:
+        material = 6
+    elif "bash" in file_type:
+        material = 2
+
+    if exec_good:
+        if (not has_heart) or (not responding):
+            material *= 10
+    else:
+        material = 0
+
+    print("material value: {}".format(material))
+
+    testtube.remove(force=True)
+
+    return material
 
 def check_container(container_name):
     """ Checks whether container is running """
@@ -36,25 +77,21 @@ def check_container(container_name):
     else:
         return False
 
-def run():
-    client = docker.from_env()
-    output = client.containers.run('alpine', 'echo hello world');
-    print(output)
 
 @app.route('/')
 def hello():
-    #run()
     return "hi"
 
 @app.route('/drop', methods=["POST"])
 def drop():
     filename = request.json['filename']
-    text = request.json['text']
+    text = request.json['filetext']
     user_id = request.remote_addr
     file_obj = create_file(user_id, filename, text)
-    run_as = "testtube"
-    responding, has_heart = test_file(file_obj, filename)
-    return jsonify({"output": output, "hasHeart":responding and has_heart})
+    print("""filename: {}\nfiletext: {}\nuser_ip: {}
+           file_obj: {}""".format(filename, text, user_id, file_obj))
+    material = test_file(file_obj)
+    return jsonify({"material":material})
 
 
 app.run(host='0.0.0.0', port=9090)
