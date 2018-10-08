@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>ajax test</title>
+	<style type="text/css">
+		* {margin: 0; padding: 0;}
+		:root { --purple: #4E4C67; --rose:#985F6F; --pink:#B4869F;
+			    --blue:#A6B1E1; --white:#DCD6F7;}
+		html, body, main {width: 100%; height: 100%;}
+		main {background: var(--white);}
+		article#gamebox {height: 95%; width: 100%; background:var(--rose); 
+						 overflow-x: scroll; overflow-y: scroll;}
+		footer {height: 4.9%; width: 100%; background:var(--blue); font-size: 50%;}
+	</style>
+</head>
+<body>
+
+<main>
+
+Address:<br>
+<textarea id="myTextarea">
+342 Alvin Road
+Ducksburg</textarea>
+<textarea id="read" disabled>
+342 Alvin Road
+Ducksburg</textarea>
+<textarea id="read">
+342 Alvin Road
+Ducksburg</textarea>
+
+<p>Click the button to get the content of the text area.</p>
+
+<button type="button" onclick="myFunction()">Try it</button>
+
+<p id="demo"></p>
+
+<script>
+function myFunction() {
+    var x = document.getElementById("myTextarea").value;
+    document.getElementById("demo").innerHTML = x;
+    var y = document.getElementById("read");
+    y.value = x;
+
+    var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+		  document.getElementById("demo").innerHTML = this.responseText;
+		}
+	};
+	xhttp.open("POST", "http://localhost:9090/collect", true);
+	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xhttp.send("script="+x);
+
+}
+</script>
+	
+</main>
+
+
+</body>
+</html>
