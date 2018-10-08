@@ -44,12 +44,14 @@ def read_shebang(text):
     else:
         return 'bash'
 
-def create_file(user_id, filename, text):
+def create_file(user_id, filename, text, row, col):
     """ Create file in staging direcory """
     uid = str(uuid.uuid4())
     new_file = {"id": uid, "user_ip":user_id,
                 "filename": filename, "text": text,
-                "filetype": read_shebang(text)}
+                "filetype": read_shebang(text),
+                "row": row,
+                "col": col}
     with open("work/{}".format(new_file["id"]), mode="a", encoding="utf-8") as fd:
         lines = text.splitlines()
         for line in lines:

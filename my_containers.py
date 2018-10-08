@@ -86,10 +86,14 @@ def hello():
 def drop():
     filename = request.json['filename']
     text = request.json['filetext']
+    row = request.json['row']
+    col = request.json['col']
     user_id = request.remote_addr
-    file_obj = create_file(user_id, filename, text)
-    print("""filename: {}\nfiletext: {}\nuser_ip: {}
-           file_obj: {}""".format(filename, text, user_id, file_obj))
+    file_obj = create_file(user_id, filename, text, row, col)
+    print("filename: {}\nfiletext: {}\nuser_ip: {} file_obj: {}".format(filename, 
+                                                                        text, 
+                                                                        user_id, 
+                                                                        file_obj))
     material = test_file(file_obj)
     return jsonify({"material":material})
 
