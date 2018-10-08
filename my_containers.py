@@ -1,28 +1,40 @@
 #!/usr/bin/python3
 from flask import Flask, request, jsonify
 import docker
+import uuid
+import subprocess
+
+from fundamentals import copy_file, execute_file, extract_heart
 
 app = Flask(__name__)
 
-def make_filename(user_id, filename):
-    """ file naming convension """
-    return "{}~{}".format(user_id, filename)
-
-def create_file(user_id, filename, text):
-    """ Create file in staging direcory """
-    pass
-
-def read_shebang(filename):
-    """ Read shebang and deduce programming language """
-    pass
-
-def exec_file(user_id, filename):
+client = docker.from_env()
+def test_file(file_obj):
     """ Copy file into container, execute file in container, return output """
-    return ("123", "cats\ndogs\npies")
+    testtube = client.containers.run('rubyshadows/heartbeat:v1', detach=True) 
 
-def check_container(container_id):
-    """ Checks whether container is healthy """
-    return (True, True)
+    c_name = testtube.name
+    file_id = file_obj['uid']
+    file_name = file_obj['filename']
+    file_type = file_obj['filetype']
+
+    copy_file(c_name, file_id, filename)
+    execute_file(c_name, filename, filetype)
+    responding = check_container(c_name)
+    if responding:
+        has_heart = extract_heart(c_name)
+    else
+        has_heart = None
+
+    return (responding, has_heart)
+
+def check_container(container_name):
+    """ Checks whether container is running """
+    container = client.containers.get(container_name)
+    if container.status == "running":
+        return True
+    else:
+        return False
 
 def run():
     client = docker.from_env()
@@ -31,17 +43,17 @@ def run():
 
 @app.route('/')
 def hello():
-    run()
+    #run()
     return "hi"
 
-@app.route('/collect', methods=["POST"])
-def collect():
-    filename = request.json['scriptname']
-    text = request.json['scripttext']
+@app.route('/drop', methods=["POST"])
+def drop():
+    filename = request.json['filename']
+    text = request.json['text']
     user_id = request.remote_addr
-    create_file(user_id, filename, text)
-    container_id, output = exec_file(user_id, filename)
-    responding, has_heart = check_container(container_id)
+    file_obj = create_file(user_id, filename, text)
+    run_as = "testtube"
+    responding, has_heart = test_file(file_obj, filename)
     return jsonify({"output": output, "hasHeart":responding and has_heart})
 
 
