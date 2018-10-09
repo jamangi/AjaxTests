@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import docker
 import uuid
 import subprocess
@@ -7,8 +8,10 @@ import subprocess
 from fundamentals import create_file, copy_file, execute_file, extract_heart
 
 app = Flask(__name__)
-
+app.url_map.strict_slashes = False
+cors = CORS(app, resources={r"/*": {"origins": "0.0.0.0"}})
 client = docker.from_env()
+
 def test_file(file_obj):
     """ Copy file into container, execute file in container, return output """
     testtube = client.containers.run('rubyshadows/heartbeat:v1', detach=True) 
@@ -82,8 +85,11 @@ def check_container(container_name):
 def hello():
     return "hi"
 
-@app.route('/drop', methods=["POST"])
-def drop():
+@app.route('/test', methods=["POST"])
+def test():
+    if "filename" not in request.json:
+        return jsonify({"msg": "no filename"})
+    print(request.json)
     filename = request.json['filename']
     text = request.json['filetext']
     row = request.json['row']
@@ -98,4 +104,13 @@ def drop():
     return jsonify({"material":material, "file_id":file_obj['id']})
 
 
-app.run(host='0.0.0.0', port=9090)
+@app.after_request
+def handle_cors(response):
+    # allow access from other domains
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+    return response
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=9090)
