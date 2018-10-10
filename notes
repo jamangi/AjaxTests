@@ -1,0 +1,13 @@
+Material Calculator
+##############################
+Curl from localhost
+
+Curling POST on windows uses only double quotes
+
+curl -X POST localhost:9090/drop -H "Content-Type: application/json" -d "{\"filename\":\"squidward\", \"filetext\":\"#!/bin/bash\nrm heart\", \"row\": 4, \"col\":2}"
+
+curl -X POST localhost:9090/drop -H "Content-Type: application/json" -d "{\"filename\":\"squidward\", \"filetext\":\"#!/bin/python3\nprint('hello world')\", \"row\": 4, \"col\":2}"
+{"file_id":"b99004d5-311c-479b-a8bc-a9332486e2bf","material":6}
+
+curl -X POST localhost:9090/drop -H "Content-Type: application/json" -d "{\"filename\":\"squidward\", \"filetext\":\"#!/bin/python3\nimport os\nos.remove('heart')\", \"row\": 4, \"col\":2}"
+{"file_id":"b42e86ed-947d-4b0b-ad1d-450258342d4d","material":60}

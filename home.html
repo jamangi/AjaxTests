@@ -36,19 +36,20 @@ Ducksburg</textarea>
 
 <script>
 function myFunction() {
-    var x = document.getElementById("myTextarea").value;
+    let x = document.getElementById("myTextarea").value;
     document.getElementById("demo").innerHTML = x;
-    var y = document.getElementById("read");
+    let y = document.getElementById("read");
     y.value = x;
 
-    var xhttp = new XMLHttpRequest();
+    let xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
-		  document.getElementById("demo").innerHTML = this.responseText;
+			let file_obj = JSON.parse(this.responseText);
+			document.getElementById("demo").innerHTML = this.responseText;
 		}
 	};
-	xhttp.open("POST", "http://localhost:9090/collect", true);
-	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xhttp.open("POST", "http://localhost:9090/drop", true);
+	xhttp.setRequestHeader("Content-type", "application/json");
 	xhttp.send("script="+x);
 
 }
