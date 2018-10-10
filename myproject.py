@@ -59,6 +59,8 @@ def test_file(file_obj):
         material = 6
     elif "bash" in file_type:
         material = 2
+    else:
+        material = 10
 
     if exec_good:
         if (not has_heart) or (not responding):
