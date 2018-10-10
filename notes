@@ -11,3 +11,8 @@ curl -X POST localhost:9090/drop -H "Content-Type: application/json" -d "{\"file
 
 curl -X POST localhost:9090/drop -H "Content-Type: application/json" -d "{\"filename\":\"squidward\", \"filetext\":\"#!/bin/python3\nimport os\nos.remove('heart')\", \"row\": 4, \"col\":2}"
 {"file_id":"b42e86ed-947d-4b0b-ad1d-450258342d4d","material":60}
+
+curl -X POST localhost/test -H "Content-Type: application/json" -d '{"filename":"squidward", "f
+iletext":"#!/bin/python3\nimport os\nos.remove('heart')", "row":4, "col":2}'
+
+curl -X POST localhost/test -H "Content-Type: application/json" -d '{"filename":"squidward", "filetext":"#!/bin/python3\nimport os\nos.remove(\"heart\")", "row":4, "col":2}'
