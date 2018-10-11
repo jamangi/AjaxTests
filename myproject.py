@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+
+import db
 from fundamentals import create_file
 from nest import test_file
 
@@ -12,6 +14,49 @@ cors = CORS(app, resources={r"/*": {"origins": "0.0.0.0"}})
 @app.route('/')
 def hello():
     return "hi"
+
+@app.route('/connect')
+def connect():
+    ''' Search for ip in database '''
+    user_ip = request.remote_addr
+    user = db.get_user_by_ip(user_ip)
+    if user is None:
+        return jsonify({})
+    else:
+        return jsonify(user.to_dict())
+
+@app.route('/set', methods=["POST"])
+def set_user():
+    ''' Set username and doggy type of ip, adds ip if not found '''
+    requires = ["name", "character"]
+    for req in requires:
+        if req not in request.json:
+            return jsonify({"msg": "no {}".format(req)})
+
+    user_ip = request.remote_addr
+    name = request.json["name"]
+    character = request.json["character"]
+    user = db.get_user_by_ip(user_ip)
+    if user is None:
+        user = db.create("User", ip=user_ip, name=name, character=character) 
+    else:
+        user = db.update(ip, name=name, character=character)
+
+    if user is None:
+        return jsonify({})
+    else:
+        return jsonify(user.to_dict())
+
+@app.route('/collect', methods=["POST"])
+def collect():
+    ''' Execute inside user container and update database '''
+    return "collect"
+
+@app.route('/drop', methods=["POST"])
+def drop():
+    ''' Test file and save it to database '''
+    return "drop"
+
 
 @app.route('/test', methods=["POST"])
 def test():
