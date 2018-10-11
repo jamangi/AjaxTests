@@ -40,7 +40,7 @@ def set_user():
     if user is None:
         user = db.create("User", ip=user_ip, name=name, character=character) 
     else:
-        user = db.update(ip, name=name, character=character)
+        user = db.update(user_ip, name=name, character=character)
 
     if user is None:
         return jsonify({})
