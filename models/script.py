@@ -10,8 +10,8 @@ class Script(BaseModel):
     '''
         Definition of the Script class
     '''
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.user_id = ''
         self.material = 0
         self.location = 'training'

@@ -10,8 +10,8 @@ class User(BaseModel):
     '''
         Definition of the User class
     '''
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.ip = ''
         self.container_name = ''
 
