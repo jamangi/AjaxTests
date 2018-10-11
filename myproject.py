@@ -102,7 +102,7 @@ def test():
                                                                         user_ip, 
                                                                         file_obj))
     material = test_file(file_obj)
-    return jsonify({"material":material, "fileid":file_obj['file_id']})
+    return jsonify({"material":material, "fileid":file_obj['fileid']})
 
 
 @app.after_request

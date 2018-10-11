@@ -10,7 +10,7 @@ def test_file(file_obj):
     c_name = testtube.name
     print()
     print("testtube name: {}".format(c_name))
-    file_id = file_obj['id']
+    file_id = file_obj['fileid']
     file_name = file_obj['filename']
     file_type = file_obj['filetype']
 
