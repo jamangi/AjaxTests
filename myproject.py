@@ -81,7 +81,7 @@ def drop():
               filename=filename, filetext=text, filetype=file_obj['filetype'],
               row=row, col=col, location=user.location)
     db.save()
-    return jsonify(new_file.to_dict)
+    return jsonify(new_file.to_dict())
 
 
 @app.route('/test', methods=["POST"])
