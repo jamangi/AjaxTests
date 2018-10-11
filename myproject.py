@@ -25,7 +25,7 @@ def connect():
     else:
         ret = user.to_dict()
         del ret["ip"]
-        return jsonify(ret.to_dict())
+        return jsonify(ret)
 
 @app.route('/set', methods=["POST"])
 def set_user():
