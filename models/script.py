@@ -11,7 +11,6 @@ class Script(BaseModel):
         Definition of the Script class
     '''
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
         self.user_id = ''
         self.material = 0
         self.location = 'training'
@@ -21,6 +20,7 @@ class Script(BaseModel):
         self.row = 0
         self.col = 0
         self.collected = {}
+        super().__init__(*args, **kwargs)
 
     def collect(self, user_id):
     	if self.collected.get(user_id) is None:

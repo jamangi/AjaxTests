@@ -11,7 +11,6 @@ class User(BaseModel):
         Definition of the User class
     '''
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
         self.ip = ''
         self.container_name = ''
 
@@ -27,6 +26,7 @@ class User(BaseModel):
         self.total_dropped = 0
         self.row = 0
         self.col = 0 # updated on drop
+        super().__init__(*args, **kwargs)
     
     @staticmethod
     def search_by_ip(ip):
