@@ -47,3 +47,9 @@ def update(ip, **kwargs):
 	except Exception as e:
 		print("** update instance error **")
 		return None
+
+def save():
+	'''
+		Saves changes to db
+	'''
+	models.storage.save()

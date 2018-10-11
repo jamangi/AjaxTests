@@ -59,26 +59,50 @@ def collect():
 @app.route('/drop', methods=["POST"])
 def drop():
     ''' Test file and save it to database '''
-    return "drop"
+    requires = ["filename", "filetext"]
+    for req in requires:
+        if req not in request.json:
+            return jsonify({"msg": "no {}".format(req)})
+    filename = request.json['filename']
+    text = request.json['filetext']
+    row = request.json['row']
+    col = request.json['col']
+    user_ip = request.remote_addr
+    # find user, check use_script, get file_obj, get material, create script with user ID, ret script
+    user = db.get_user_by_ip(user_ip) # if ip changes mid session, user unable to drop file
+    if user is None:
+        return jsonify({"msg": "ip switched"})
+    if user.use_script() is None:
+        return jsonify({"msg": "no scripts held"})
+    file_obj = create_file(user_ip, filename, text, row, col)
+    material = test_file(file_obj)
+    
+    new_file = db.create("Script", user_id=user.id, material=material,
+              filename=filename, filetext=text, filetype=file_obj['filetype'],
+              row=row, col=col, location=user.location)
+    db.save()
+    return jsonify(new_file.to_dict)
 
 
 @app.route('/test', methods=["POST"])
 def test():
-    if "filename" not in request.json:
-        return jsonify({"msg": "no filename"})
+    requires = ["filename", "filetext"]
+    for req in requires:
+        if req not in request.json:
+            return jsonify({"msg": "no {}".format(req)})
     print(request.json)
     filename = request.json['filename']
     text = request.json['filetext']
     row = request.json['row']
     col = request.json['col']
-    user_id = request.remote_addr
-    file_obj = create_file(user_id, filename, text, row, col)
+    user_ip = request.remote_addr
+    file_obj = create_file(user_ip, filename, text, row, col)
     print("filename: {}\nfiletext: {}\nuser_ip: {} file_obj: {}".format(filename, 
                                                                         text, 
-                                                                        user_id, 
+                                                                        user_ip, 
                                                                         file_obj))
     material = test_file(file_obj)
-    return jsonify({"material":material, "file_id":file_obj['id']})
+    return jsonify({"material":material, "fileid":file_obj['file_id']})
 
 
 @app.after_request
