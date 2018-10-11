@@ -20,6 +20,7 @@ def create(classname=None, **kwargs):
 
 	except Exception as e:
 		print("** create instance error **")
+		print(e)
 		return None
 
 def get_user_by_ip(ip):

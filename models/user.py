@@ -10,21 +10,23 @@ class User(BaseModel):
     '''
         Definition of the User class
     '''
-    ip = ''
-    container_name = ''
+    def __init__(self):
+        super().__init__()
+        self.ip = ''
+        self.container_name = ''
 
-    name = ''
-    location = 'training'
-    form = 'dog'
-    character = 'titan'
-    scripts_held = 10
-    script_limit = 20
-    material = 0
+        self.name = ''
+        self.location = 'training'
+        self.form = 'dog'
+        self.character = 'titan'
+        self.scripts_held = 10
+        self.script_limit = 20
+        self.material = 0
 
-    total_collected = 0
-    total_dropped = 0
-    row = -1
-    col = -1 # updated on drop
+        self.total_collected = 0
+        self.total_dropped = 0
+        self.row = 0
+        self.col = 0 # updated on drop
     
     @staticmethod
     def search_by_ip(ip):

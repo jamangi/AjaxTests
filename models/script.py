@@ -10,17 +10,17 @@ class Script(BaseModel):
     '''
         Definition of the Script class
     '''
-    user_id = ''
-    material = 0
-    location = 'training'
-    filename = ''
-    filetext = ''
-    filetype = 'bash'
-    row = 0
-    col = 0
-
     def __init__(self):
-    	self.collected = {}
+        super().__init__()
+        self.user_id = ''
+        self.material = 0
+        self.location = 'training'
+        self.filename = ''
+        self.filetext = ''
+        self.filetype = 'bash'
+        self.row = 0
+        self.col = 0
+        self.collected = {}
 
     def collect(self, user_id):
     	if self.collected.get(user_id) is None:
