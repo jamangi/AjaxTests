@@ -23,7 +23,9 @@ def connect():
     if user is None:
         return jsonify({})
     else:
-        return jsonify(user.to_dict())
+        ret = user.to_dict()
+        del ret["ip"]
+        return jsonify(ret.to_dict())
 
 @app.route('/set', methods=["POST"])
 def set_user():
@@ -45,7 +47,9 @@ def set_user():
     if user is None:
         return jsonify({})
     else:
-        return jsonify(user.to_dict())
+        ret = user.to_dict()
+        del ret["ip"]
+        return jsonify(ret)
 
 @app.route('/collect', methods=["POST"])
 def collect():

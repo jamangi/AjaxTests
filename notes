@@ -16,3 +16,7 @@ curl -X POST localhost/test -H "Content-Type: application/json" -d '{"filename":
 iletext":"#!/bin/python3\nimport os\nos.remove('heart')", "row":4, "col":2}'
 
 curl -X POST localhost/test -H "Content-Type: application/json" -d '{"filename":"squidward", "filetext":"#!/bin/python3\nimport os\nos.remove(\"heart\")", "row":4, "col":2}'
+
+curl -X GET localhost/connect
+
+curl -X POST localhost/set -H "Content-Type: application/json" -d '{"name":"madison", "character":"goku"}'curl -X POST localhost/set -H "Content-Type: application/json" -d '{"name":"madison", "character":"goku"}'
