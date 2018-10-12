@@ -3,6 +3,24 @@ from fundamentals import copy_file, execute_file, extract_heart
 
 client = docker.from_env()
 
+def create_container(user_id):
+    '''
+        Pulls container from dockerhub and returns it
+    '''
+    pass
+
+def get_container(container_name):
+    '''
+        Finds running container on machine and returns it
+    '''
+    pass
+
+def run_file(container_name, file_obj):
+    '''
+        Run a file within container
+    '''
+    pass
+
 def test_file(file_obj):
     """ Copy file into container, execute file in container, return output """
     testtube = client.containers.run('rubyshadows/heartbeat:v1', detach=True) 

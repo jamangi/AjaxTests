@@ -22,6 +22,15 @@ def create(classname=None, **kwargs):
 		print("** create instance error **")
 		print(e)
 		return None
+def get(classname=None, id):
+	'''
+		Get object by id
+	'''
+	if classname is None:
+		print("** class name missing **")
+		return None
+	instance = models.storage.get(classname, id)
+	return instance
 
 def get_user_by_ip(ip):
 	'''

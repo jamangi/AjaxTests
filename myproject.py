@@ -4,7 +4,7 @@ from flask_cors import CORS
 
 import db
 from fundamentals import create_file
-from nest import test_file
+import nest
 
 app = Flask(__name__)
 app.url_map.strict_slashes = False
@@ -23,6 +23,7 @@ def connect():
     if user is None:
         return jsonify({})
     else:
+        user.touch()
         ret = user.to_dict()
         del ret["ip"]
         return jsonify(ret)
@@ -54,6 +55,13 @@ def set_user():
 @app.route('/collect', methods=["POST"])
 def collect():
     ''' Execute inside user container and update database '''
+    requires = ["fileid"]
+    for req in requires:
+        if req not in request.json:
+            return jsonify({"msg": "no {}".format(req)})
+    fileid = request.json['fileid']
+    script = db.get("Script", fileid)
+    # find container, run script, add/deduct material, return user dict
     return "collect"
 
 @app.route('/drop', methods=["POST"])
@@ -75,7 +83,7 @@ def drop():
     if user.use_script() is None:
         return jsonify({"msg": "no scripts held"})
     file_obj = create_file(user_ip, filename, text, row, col)
-    material = test_file(file_obj)
+    material = nest.test_file(file_obj)
     
     new_file = db.create("Script", user_id=user.id, material=material,
               filename=filename, filetext=text, filetype=file_obj['filetype'],
@@ -83,6 +91,32 @@ def drop():
     db.save()
     return jsonify(new_file.to_dict())
 
+@app.route('/start')
+def start():
+    '''
+        Creates container, updates user container name
+    '''
+    # search database for ip:id
+    user_ip = request.remote_addr
+    user = db.get_user_by_ip(user_ip)
+    if user is None:
+        return jsonify({"msg": "ip not found"})
+    if len(user.container_name) == 0:
+        container = nest.create_container(user.id)
+        user.container_name = container['name']
+    else:
+        container = nest.get_container(user.container_name)
+        if container is None:
+            container = nest.create_container(user.id)
+            user.container_name = container['name']
+
+    user.touch()
+    return jsonify({"container_name":container['name']})
+    # if found, ensure user has no container name
+        # if no container name, create container
+        # if container name, check for container
+            # if no container found, create container, update name
+            # if container found, do nothing
 
 @app.route('/test', methods=["POST"])
 def test():
@@ -101,7 +135,7 @@ def test():
                                                                         text, 
                                                                         user_ip, 
                                                                         file_obj))
-    material = test_file(file_obj)
+    material = nest.test_file(file_obj)
     return jsonify({"material":material, "fileid":file_obj['fileid']})
 
 

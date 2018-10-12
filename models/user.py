@@ -2,9 +2,11 @@
 '''
     Class representing a User
 '''
-from models.base_model import BaseModel
-import models
+from datetime import datetime
 import os
+
+import models
+from models.base_model import BaseModel
 
 class User(BaseModel):
     '''
@@ -38,6 +40,12 @@ class User(BaseModel):
     		if user.ip == ip:
     			return user
     	return None
+
+    def touch(self):
+        '''
+            Update the updated_at attribute without saving to disk.
+        '''
+        self.updated_at = datetime.now()
 
     def add_material(self, amount):
     	'''
