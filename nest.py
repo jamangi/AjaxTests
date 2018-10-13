@@ -1,21 +1,57 @@
 import docker
 
+import db
 from fundamentals import copy_file, execute_file, extract_heart
 
 client = docker.from_env()
 NEST = {}
 
+def save_container(user_id):
+    '''
+        Commit and save container to dockerhub
+    '''
+    user = db.get("User", user_id)
+    if user is None:
+        return None
 
-def load_container(user_id):
+    user.container_version += 1
+    container = NEST.get(user_id)
+    if container is None:
+        return None
+
+    repo = "rubyshadows/{}".format(user_id)
+    container.commit(repository=repo,
+                     author=user.name,
+                     tag=user.container_version)
+    print("saving container: {}".format(user_id))
+    client.images.push(repo)
+    return True
+
+def load_container(user_id, version=None):
     '''
         TODO: Pull container from dockerhub and return it
         If none on dockerhub, create new one
     '''
-    container = NEST.get(user_id)
-    if container is None:
-        return new_container(user_id)
-    else:
+    user = db.get("User", user_id)
+    if user is None:
+        return None
+
+    remove_container(user_id)
+    repo = "rubyshadows/{}".format(user_id)
+    if verison is None:
+        version = user.container_version
+    try:
+        print("pulling image from repo")
+        img = client.images.pull(repo, tag=version)
+        container = client.containers.run(img, detach=True)
+        NEST[user_id] = container
+        print("successful pull: {}".format(user_id))
         return container
+    except (docker.errors.ImageNotFound, docker.errors.APIError) as e:
+        print("remote image not found {}".format(user_id))
+        print("creating new container\n")
+        return new_container(user_id)
+
 
 def new_container(user_id):
     '''
@@ -40,8 +76,9 @@ def remove_container(user_id):
     if container == None:
         return
     else:
+        save_container(user_id)
         container.remove(force=True)
-    del NEST[user_id]
+        del NEST[user_id]
 
 def run_file(user_id, file_obj):
     '''

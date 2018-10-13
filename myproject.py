@@ -184,6 +184,7 @@ def full_restore():
     container = nest.new_container(user.id)
     user.form = user.base_form
     db.save()
+    user.touch()
     return jsonify({"container_name":container.name})
 
 @app.route('/heal')
@@ -196,7 +197,6 @@ def heal():
     if user is None:
         return jsonify({"msg": "ip not found"})
     container = nest.load_container(user.id)
-    user.touch()
 
     filename = "heart"
     text = ";)" #TODO: change to random quote
@@ -210,6 +210,7 @@ def heal():
     else:
         user.form = user.base_form
     db.save()
+    user.touch()
     return jsonify(result)
 
 @app.route('/start')
