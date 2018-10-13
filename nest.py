@@ -38,7 +38,7 @@ def load_container(user_id, version=None):
 
     remove_container(user_id)
     repo = "rubyshadows/{}".format(user_id)
-    if verison is None:
+    if version is None:
         version = user.container_version
     try:
         print("pulling image from repo")
