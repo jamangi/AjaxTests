@@ -1,6 +1,28 @@
 import subprocess
 import uuid
 
+def push_image(user_id, ver):
+    '''
+        Push repo to docker hub
+    '''
+    try:
+        subprocess.check_output(["docker","push","rubyshadows/{}:{}".format(user_id, ver)])
+        return True
+    except Exception as e:
+        print("Error in image push: {}".format(e))
+        return None
+
+def pull_image(user_id, ver):
+    '''
+        Pull image from docker hub
+    '''
+    try:
+        subprocess.check_output(["docker","pull","rubyshadows/{}:{}".format(user_id, ver)])
+        return True
+    except Exception as e:
+        print("Error in image pull: {}".format(e))
+        return None
+
 def copy_file(container_name, fileid, filename):
     """ will error if home directory is missing """
     try:

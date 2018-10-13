@@ -2,6 +2,7 @@ import docker
 
 import db
 from fundamentals import copy_file, execute_file, extract_heart
+from fundamentals import push_image, pull_image
 
 client = docker.from_env()
 NEST = {}
@@ -15,6 +16,7 @@ def save_container(user_id):
         return None
 
     user.container_version += 1
+    db.save()
     container = NEST.get(user_id)
     if container is None:
         return None
@@ -24,7 +26,8 @@ def save_container(user_id):
                      author=user.name,
                      tag=user.container_version)
     print("saving container: {}".format(user_id))
-    client.images.push(repo)
+    # client.images.push(repo)
+    fundamentals.push_image(repo, user.container_version)
     return True
 
 def load_container(user_id, version=None):
@@ -40,15 +43,18 @@ def load_container(user_id, version=None):
     repo = "rubyshadows/{}".format(user_id)
     if version is None:
         version = user.container_version
+    full = "{}:{}".format(repo, version)
     try:
         print("pulling image from repo")
         img = client.images.pull(repo, tag=version)
-        container = client.containers.run(img, detach=True)
+        print("client.images.pull: {}".format(img))
+        container = client.containers.run(full, detach=True)
         NEST[user_id] = container
         print("successful pull: {}".format(user_id))
         return container
     except (docker.errors.ImageNotFound, docker.errors.APIError) as e:
-        print("remote image not found {}".format(user_id))
+        print("remote image not found: {}".format(full))
+        print(e)
         print("creating new container\n")
         return new_container(user_id)
 
@@ -91,11 +97,11 @@ def run_file(user_id, file_obj):
     file_name = file_obj['filename']
     file_type = file_obj['filetype']
 
-    copy_good = copy_file(c_name, file_id, file_name)
-    output = execute_file(c_name, file_name, file_type)
+    copy_good = fundamentals.copy_file(c_name, file_id, file_name)
+    output = fundamentals.execute_file(c_name, file_name, file_type)
     responding = check_container(c_name)
     if responding:
-        has_heart = extract_heart(c_name)
+        has_heart = fundamentals.extract_heart(c_name)
     else:
         has_heart = None
 
@@ -114,13 +120,13 @@ def test_file(file_obj):
     file_name = file_obj['filename']
     file_type = file_obj['filetype']
 
-    copy_good = copy_file(c_name, file_id, file_name)
+    copy_good = fundamentals.copy_file(c_name, file_id, file_name)
     if copy_good:
         status = "success"
     else:
         status = "failure"
     print("copy file {} inside container {} - {}".format(file_name, c_name, status))
-    exec_good = execute_file(c_name, file_name, file_type)
+    exec_good = fundamentals.execute_file(c_name, file_name, file_type)
     print()
 
     if exec_good:
@@ -138,7 +144,7 @@ def test_file(file_obj):
     print("container is {}".format(status))
 
     if responding:
-        has_heart = extract_heart(c_name)
+        has_heart = fundamentals.extract_heart(c_name)
     else:
         has_heart = None
 
