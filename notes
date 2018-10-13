@@ -36,4 +36,9 @@ curl -X POST localhost:9000/drop -H "Content-Type: application/json" -d "{\"file
 
 curl -X POST localhost:9000/collect -H "Content-Type: application/json" -d "{\"fileid\":\"9d7b125c-1fb9-4c1b-a1ff-e7503aea9576\"}"
 
-curl -X GET localhost:9000/connect
+curl -X GET localhost:5000/connect
+
+curl -X POST localhost:5000/set -H "Content-Type:application/json" -d '{"name":"joey", "character": "titan", "base_form": "dog", "location": "training"}'
+
+curl -X GET localhost:5000/start
+
