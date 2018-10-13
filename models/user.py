@@ -14,6 +14,7 @@ class User(BaseModel):
     '''
     def __init__(self, *args, **kwargs):
         self.ip = ''
+        self.container_version = 0
 
         self.name = ''
         self.location = 'training'
