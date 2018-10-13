@@ -45,7 +45,7 @@ def load_container(user_id, version=None):
     full = "{}:{}".format(repo, version)
     try:
         print("pulling image from repo")
-        img = client.images.pull(repo, tag=version)
+        img = client.images.pull(repo, tag=str(version))
         print("client.images.pull: {}".format(img))
         container = client.containers.run(full, detach=True)
         NEST[user_id] = container
