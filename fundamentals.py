@@ -19,6 +19,7 @@ def pull_image(user_id, ver):
         Pull image from docker hub
     '''
     try:
+        repo = "rubyshadows/{}:{}".format(user_id, ver)
         subprocess.check_output(["sudo", "docker","pull", repo])
         print("pulled: {}".format(repo))
         return True
