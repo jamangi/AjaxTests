@@ -66,6 +66,7 @@ def set_user():
     else:
         user = db.update(user_ip, name=name, character=character)
 
+    user.touch()
     if user is None:
         return jsonify({})
     else:
@@ -141,6 +142,7 @@ def drop():
     if user is None:
         return jsonify({"msg": "ip switched"})
     
+    user.touch()
     if user.form == 'ghost':
         return jsonify({"msg": "you're a ghost"})
 
