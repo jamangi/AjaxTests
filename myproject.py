@@ -52,7 +52,7 @@ def connect():
 @app.route('/set', methods=["POST"])
 def set_user():
     ''' Set username and doggy type of ip, adds ip if not found '''
-    requires = ["name", "character"]
+    requires = ["name", "character", "base_form", "location"]
     if not request.json:
         return jsonify({"msg": "not json"}), 400
     for req in requires:
@@ -62,11 +62,17 @@ def set_user():
     user_ip = request.remote_addr
     name = request.json["name"]
     character = request.json["character"]
+    base_form = request.json["base_form"]
+    location = request.json["location"]
     user = db.get_user_by_ip(user_ip)
     if user is None:
-        user = db.create("User", ip=user_ip, name=name, character=character) 
+        user = db.create("User", ip=user_ip, name=name,
+                         character=character, base_form=base_form,
+                         form=base_form, location=location) 
     else:
-        user = db.update(user_ip, name=name, character=character)
+        user = db.update(user_ip, name=name,
+                         character=character, base_form=base_form,
+                         form=base_form, location=location) 
 
     user.touch()
     if user is None:
