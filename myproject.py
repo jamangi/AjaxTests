@@ -188,7 +188,7 @@ def edit():
     if user is None:
         return jsonify({"msg": "ip not found"})
 
-     if not request.json:
+    if not request.json:
         return jsonify({"msg": "not json"}), 400
 
     for req in requires:
