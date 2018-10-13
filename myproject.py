@@ -103,6 +103,8 @@ def collect():
         return jsonify({"msg": "you're a ghost"})
 
     script = db.get("Script", fileid)
+    if script is None:
+        return jsonify({"msg":"script not found"})
     filename = script.filename
     text = script.filetext
     row = script.row
@@ -174,6 +176,46 @@ def drop():
     res = user.to_dict()
     del res['ip']
     return jsonify({"user": res, "script" : new_file.to_dict()})
+
+@app.route('/edit', methods=["POST"])
+def edit():
+    '''
+        Edit a dropped script
+    '''
+    requires = ["fileid", "filename", "filetext"]
+    user_ip = request.remote_addr
+    user = db.get_user_by_ip(user_ip)
+    if user is None:
+        return jsonify({"msg": "ip not found"})
+
+     if not request.json:
+        return jsonify({"msg": "not json"}), 400
+
+    for req in requires:
+        if not request.json.get(req):
+            return jsonify({"msg": "no {}".format(req)}), 400
+
+    script = db.get("Script", fileid)
+    if script is None:
+        return jsonify({"msg":"script not found"})
+    author = db.get("User", script.user_id)
+    if author.id != user.id:
+        return jsonify({"msg": "script is not yours"})
+
+    filename = request.json.get("filename")
+    text = request.json.get("filetext")
+    row = script.row
+    col = script.col
+
+    file_obj = create_file(user_ip, filename, text, row, col)
+    material = nest.test_file(file_obj)
+
+    script.filename = filename
+    script.filetext = text
+    script.material = material
+
+    db.save()
+    return jsonify(script.to_dict())
 
 #TODO: @app.route('/backup')
 
