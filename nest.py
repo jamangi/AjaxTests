@@ -26,7 +26,7 @@ def save_container(user_id):
                      tag=user.container_version)
     print("saving container: {}".format(user_id))
     # client.images.push(repo)
-    fundamentals.push_image(repo, user.container_version)
+    fundamentals.push_image(user_id, user.container_version)
     return True
 
 def load_container(user_id, version=None):
