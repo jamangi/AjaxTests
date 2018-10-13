@@ -28,7 +28,7 @@ def scan_for_inactive():
         now = datetime.datetime.now()
         afk_time = now - updated_at
         if afk_time > threshold:
-            inactive.append(container)
+            inactive.append(user_id)
             print("inactive container: {}".format(user.ip))
         else:
             print("active container: {}".format(user.ip))
@@ -50,9 +50,9 @@ def remove_inactive():
     count = len(inactive)
     while count:
         count -= 1
-        container = inactive.pop()
-        print("Removing container: {}".format(container.name))
-        container.remove(force=True)
+        user_id = inactive.pop()
+        print("Removing container: {}".format(user_id))
+        nest.remove_container(user_id)
 
 def make_pass(*args, **kwargs):
     '''

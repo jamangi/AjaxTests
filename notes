@@ -9,12 +9,12 @@ Curl from localhost
 
 Curling POST on windows uses only double quotes
 
-curl -X POST localhost:9090/drop -H "Content-Type: application/json" -d "{\"filename\":\"squidward\", \"filetext\":\"#!/bin/bash\nrm heart\", \"row\": 4, \"col\":2}"
+curl -X POST localhost:9000/test -H "Content-Type: application/json" -d "{\"filename\":\"squidward\", \"filetext\":\"#!/bin/bash\nrm heart\", \"row\": 4, \"col\":2}"
 
-curl -X POST localhost:9090/drop -H "Content-Type: application/json" -d "{\"filename\":\"squidward\", \"filetext\":\"#!/bin/python3\nprint('hello world')\", \"row\": 4, \"col\":2}"
+curl -X POST localhost:9000/test -H "Content-Type: application/json" -d "{\"filename\":\"squidward\", \"filetext\":\"#!/bin/python3\nprint('hello world')\", \"row\": 4, \"col\":2}"
 {"file_id":"b99004d5-311c-479b-a8bc-a9332486e2bf","material":6}
 
-curl -X POST localhost:9090/drop -H "Content-Type: application/json" -d "{\"filename\":\"squidward\", \"filetext\":\"#!/bin/python3\nimport os\nos.remove('heart')\", \"row\": 4, \"col\":2}"
+curl -X POST localhost:9000/test -H "Content-Type: application/json" -d "{\"filename\":\"squidward\", \"filetext\":\"#!/bin/python3\nimport os\nos.remove('heart')\", \"row\": 4, \"col\":2}"
 {"file_id":"b42e86ed-947d-4b0b-ad1d-450258342d4d","material":60}
 
 curl -X POST localhost/test -H "Content-Type: application/json" -d '{"filename":"squidward", "f
@@ -25,3 +25,15 @@ curl -X POST localhost/test -H "Content-Type: application/json" -d '{"filename":
 curl -X GET localhost/connect
 
 curl -X POST localhost/set -H "Content-Type: application/json" -d '{"name":"madison", "character":"goku"}'curl -X POST localhost/set -H "Content-Type: application/json" -d '{"name":"madison", "character":"goku"}'
+
+############################################################
+
+curl -X POST localhost:9000/set -H "Content-Type: application/json" -d "{\"name\":\"madison\", \"character\":\"goku\"}"
+
+curl -X GET localhost:9000/check
+
+curl -X POST localhost:9000/drop -H "Content-Type: application/json" -d "{\"filename\":\"squidward\", \"filetext\":\"#!/bin/python3\nimport os\nos.remove('heart')\", \"row\": 4, \"col\":2}"
+
+curl -X POST localhost:9000/collect -H "Content-Type: application/json" -d "{\"fileid\":\"9d7b125c-1fb9-4c1b-a1ff-e7503aea9576\"}"
+
+curl -X GET localhost:9000/connect
