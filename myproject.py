@@ -31,6 +31,10 @@ def check_container():
         return jsonify({"msg": "no user"})
     else:
         container = nest.user_container(user.id)
+        if container is None:
+            return jsonify({"msg": "no container"})
+
+        return jsonify({"container_name": container.name})
 
 @app.route('/connect')
 def connect():

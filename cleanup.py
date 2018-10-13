@@ -39,7 +39,7 @@ def remove_all():
         TODO: use nest.remove, to ensure its pushed to dockerhub
     '''
     for user_id, container in nest.NEST.items():
-        container.remove(force=True)
+        nest.remove_container(user_id)
 
 def remove_inactive():
     '''

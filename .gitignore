@@ -1,3 +1,6 @@
 *pycache*
 work/*
 dhdb.json
+log
+reset
+test.py

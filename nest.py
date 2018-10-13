@@ -41,6 +41,7 @@ def remove_container(user_id):
         return
     else:
         container.remove(force=True)
+    del NEST[user_id]
 
 def run_file(user_id, file_obj):
     '''
