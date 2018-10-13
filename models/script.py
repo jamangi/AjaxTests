@@ -19,15 +19,15 @@ class Script(BaseModel):
         self.filetype = 'bash'
         self.row = 0
         self.col = 0
-        self.collected = {}
+        self.collected_list = {}
         super().__init__(*args, **kwargs)
 
-    def collected(self, user_id):
-        if self.collected.get(user_id) is None:
+    def has_collected(self, user_id):
+        if self.collected_list.get(user_id) is None:
             return False
         else:
             return True
 
     def collect(self, user_id):
-        self.collected[user_id] = True
+        self.collected_list[user_id] = True
         self.save()
