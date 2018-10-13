@@ -1,8 +1,7 @@
 import docker
 
 import db
-from fundamentals import copy_file, execute_file, extract_heart
-from fundamentals import push_image, pull_image
+import fundamentals
 
 client = docker.from_env()
 NEST = {}
