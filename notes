@@ -42,3 +42,16 @@ curl -X POST localhost:5000/set -H "Content-Type:application/json" -d '{"name":"
 
 curl -X GET localhost:5000/start
 
+
+#############################################################
+
+saving container: b0b0c3e9-44e7-49de-b230-e874c0cc6cec
+
+WARNING: Error loading config file: /home/vagrant/.docker/config.json: stat /home/vagrant/.docker/config.json: permission denied
+
+An image does not exist locally with the tag: rubyshadows/rubyshadows/b0b0c3e9-44e7-49de-b230-e874c0cc6cec
+
+Error in image push: Command '['docker', 'push', 'rubyshadows/rubyshadows/b0b0c3e9-44e7-49de-b230-e874c0cc6cec:5']' returned non-zero exit status 1
+
+remove repo name from command
+add sudo

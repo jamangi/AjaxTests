@@ -6,7 +6,7 @@ def push_image(user_id, ver):
         Push repo to docker hub
     '''
     try:
-        subprocess.check_output(["docker","push","rubyshadows/{}:{}".format(user_id, ver)])
+        subprocess.check_output(["sudo", "docker","push","rubyshadows/{}:{}".format(user_id, ver)])
         return True
     except Exception as e:
         print("Error in image push: {}".format(e))
@@ -17,7 +17,7 @@ def pull_image(user_id, ver):
         Pull image from docker hub
     '''
     try:
-        subprocess.check_output(["docker","pull","rubyshadows/{}:{}".format(user_id, ver)])
+        subprocess.check_output(["sudo", "docker","pull","rubyshadows/{}:{}".format(user_id, ver)])
         return True
     except Exception as e:
         print("Error in image pull: {}".format(e))
@@ -26,7 +26,7 @@ def pull_image(user_id, ver):
 def copy_file(container_name, fileid, filename):
     """ will error if home directory is missing """
     try:
-        subprocess.check_output(["docker","cp","work/{}".format(fileid),
+        subprocess.check_output(["sudo", "docker","cp","work/{}".format(fileid),
                                  "{}:/home/{}".format(container_name, filename)])
         return True
     except Exception as e:
@@ -38,7 +38,7 @@ def execute_file(container_name, filename, filetype):
         Execute file within container
     '''
     try:
-        output = subprocess.check_output(["docker", "exec", container_name, filetype, "/home/{}".format(filename)])
+        output = subprocess.check_output(["sudo", "docker", "exec", container_name, filetype, "/home/{}".format(filename)])
         if output:
             return output
         else:
@@ -52,7 +52,7 @@ def extract_heart(container_name):
         TODO: make error catch more specific
     '''
     try:
-        output = subprocess.check_output(["docker","cp","{}:/home/heart".format(container_name),
+        output = subprocess.check_output(["sudo", "docker","cp","{}:/home/heart".format(container_name),
                                           "heartdump.txt"])
         return True
     except Exception as e:
