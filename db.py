@@ -3,14 +3,11 @@ from models.base_model import BaseModel
 from models.user import User
 from models.script import Script
 
-def create(classname=None, **kwargs):
+def create(classname, **kwargs):
 	'''
 		Create a new instance of class BaseModel and saves it
 		to the JSON file.
 	'''
-	if classname is None:
-		print("** class name missing **")
-		return None
 	try:
 		new_instance = eval(classname)()
 		for key, value in kwargs.items():
@@ -22,13 +19,10 @@ def create(classname=None, **kwargs):
 		print("** create instance error **")
 		print(e)
 		return None
-def get(classname=None, id):
+def get(classname, id):
 	'''
 		Get object by id
 	'''
-	if classname is None:
-		print("** class name missing **")
-		return None
 	instance = models.storage.get(classname, id)
 	return instance
 

@@ -29,5 +29,5 @@ class Script(BaseModel):
             return True
 
     def collect(self, user_id):
-		self.collected[user_id] = True
+        self.collected[user_id] = True
         self.save()

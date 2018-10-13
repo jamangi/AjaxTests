@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import atexit
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
