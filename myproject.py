@@ -102,7 +102,7 @@ def collect():
     if author.id == user.id:
         return jsonify({"msg": "script is yours"})
 
-    if script.collected(user.id):
+    if script.has_collected(user.id):
         return jsonify({"msg": "you've already collected this script"})
 
     if user.has_space() == False:
