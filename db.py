@@ -33,6 +33,13 @@ def get_user_by_ip(ip):
 	result = User.search_by_ip(ip)
 	return result
 
+def get_scripts(location=None):
+	'''
+		Searches for scripts in given location
+	'''
+	result = Script.get_scripts(location)
+	return result
+
 def update(ip, **kwargs):
 	'''
 		Update instance to have desired attributes

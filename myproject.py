@@ -42,7 +42,7 @@ def connect():
     user_ip = request.remote_addr
     user = db.get_user_by_ip(user_ip)
     if user is None:
-        return jsonify({})
+        return jsonify({"msg": "no user"})
     else:
         user.touch()
         ret = user.to_dict()
@@ -218,6 +218,22 @@ def heal():
     db.save()
     user.touch()
     return jsonify(result)
+
+@app.route('/load_scripts')
+def load_scripts():
+    '''
+        Loads scripts from memory
+    '''
+    location = "training"
+    user_ip = request.remote_addr
+    user = db.get_user_by_ip(user_ip)
+    if user is not None:
+        location = user.location
+    all_scripts = []
+    for script in db.get_scripts(location):
+        all_scripts.append(script.to_dict())
+    return jsonify({"scripts": all_scripts})
+
 
 @app.route('/start')
 def start():

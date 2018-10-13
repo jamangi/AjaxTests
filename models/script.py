@@ -31,3 +31,15 @@ class Script(BaseModel):
     def collect(self, user_id):
         self.collected_list[user_id] = True
         self.save()
+
+    @staticmethod
+    def get_scripts(location=None):
+        all_scripts = models.storage.all('Script')
+        res = []
+        for script in all_scripts.values():
+            if location is None:
+                res.append(script)
+            else:
+                if location == script.location:
+                    res.append(script)
+        return res
