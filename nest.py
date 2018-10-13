@@ -11,7 +11,7 @@ def save_container(user_id, container):
         Commit and save container to dockerhub
     '''
     user = db.get("User", user_id)
-    
+
     if user is None:
         return None
 
@@ -83,7 +83,7 @@ def remove_container(user_id):
         return
     else:
         del NEST[user_id]
-        save_container(user_Id, container)
+        save_container(user_id, container)
         container.remove(force=True)
 
 def run_file(user_id, file_obj):
