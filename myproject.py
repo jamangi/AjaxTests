@@ -97,6 +97,10 @@ def collect():
         return jsonify({"msg": "you're a ghost"})
 
     script = db.get("Script", fileid)
+    filename = script.filename
+    text = script.filetext
+    row = script.row
+    col = script.col
     is_bad_file = script.material >= 20
     author = db.get("User", script.user_id)
     if author.id == user.id:
