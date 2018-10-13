@@ -6,7 +6,9 @@ def push_image(user_id, ver):
         Push repo to docker hub
     '''
     try:
-        subprocess.check_output(["sudo", "docker","push","rubyshadows/{}:{}".format(user_id, ver)])
+        repo = "rubyshadows/{}:{}".format(user_id, ver)
+        subprocess.check_output(["sudo", "docker","push", repo])
+        print("pushed: {}".format(repo))
         return True
     except Exception as e:
         print("Error in image push: {}".format(e))
@@ -17,7 +19,8 @@ def pull_image(user_id, ver):
         Pull image from docker hub
     '''
     try:
-        subprocess.check_output(["sudo", "docker","pull","rubyshadows/{}:{}".format(user_id, ver)])
+        subprocess.check_output(["sudo", "docker","pull", repo])
+        print("pulled: {}".format(repo))
         return True
     except Exception as e:
         print("Error in image pull: {}".format(e))
