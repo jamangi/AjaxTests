@@ -1,25 +1,69 @@
 import docker
+
 from fundamentals import copy_file, execute_file, extract_heart
 
 client = docker.from_env()
+NEST = {}
 
-def create_container(user_id):
-    '''
-        Pulls container from dockerhub and returns it
-    '''
-    pass
 
-def get_container(container_name):
+def load_container(user_id):
+    '''
+        TODO: Pull container from dockerhub and return it
+        If none on dockerhub, create new one
+    '''
+    container = NEST.get(user_id)
+    if container is None:
+        return new_container(user_id)
+    else:
+        return container
+
+def new_container(user_id):
+    '''
+        Remove old container and create new one
+    '''
+    remove_container(user_id)
+    container = client.containers.run('rubyshadows/heartbeat:v1', detach=True) 
+    NEST[user_id] = container
+    return container
+
+def user_container(user_id):
     '''
         Finds running container on machine and returns it
     '''
-    pass
+    return NEST.get(user_id)
 
-def run_file(container_name, file_obj):
+def remove_container(user_id):
     '''
-        Run a file within container
+        Remove container from memory
     '''
-    pass
+    container = NEST.get(user_id)
+    if container == None:
+        return
+    else:
+        container.remove(force=True)
+
+def run_file(user_id, file_obj):
+    '''
+        Run a file within container, return output and hasHeart
+    '''
+    c_name = NEST.get(user_id).name
+    print()
+    print("User {}: {}".format(user_id, c_name))
+    file_id = file_obj['fileid']
+    file_name = file_obj['filename']
+    file_type = file_obj['filetype']
+
+    copy_good = copy_file(c_name, file_id, file_name)
+    output = execute_file(c_name, file_name, file_type)
+    responding = check_container(c_name)
+    if responding:
+        has_heart = extract_heart(c_name)
+    else:
+        has_heart = None
+
+    print("Heart: {}\n".format(has_heart))
+    return {"output": output, "has_heart": has_heart}
+
 
 def test_file(file_obj):
     """ Copy file into container, execute file in container, return output """

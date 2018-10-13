@@ -3,17 +3,33 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 import db
+import cleanup
 from fundamentals import create_file
 import nest
 
 app = Flask(__name__)
 app.url_map.strict_slashes = False
 cors = CORS(app, resources={r"/*": {"origins": "0.0.0.0"}})
-
+cleanup.start_cleaner()
 
 @app.route('/')
-def hello():
-    return "hi"
+def status():
+    '''
+        Status check
+    '''
+    return jsonify({"status": "ok"})
+
+@app.route('/check')
+def check_container():
+    '''
+        checks if container exists for this user
+    '''
+    user_ip = request.remote_addr
+    user = db.get_user_by_ip(user_ip)
+    if user is None:
+        return jsonify({"msg": "no user"})
+    else:
+        container = nest.user_container(user.id)
 
 @app.route('/connect')
 def connect():
@@ -60,9 +76,48 @@ def collect():
         if req not in request.json:
             return jsonify({"msg": "no {}".format(req)})
     fileid = request.json['fileid']
+    user_ip = request.remote_addr
+    user = db.get_user_by_ip(user_ip)
+    if user is None:
+        return jsonify({"msg": "ip switched"})
+
+    user.touch()
+
+    if user.form == 'ghost':
+        return jsonify({"msg": "you're a ghost"})
+
     script = db.get("Script", fileid)
-    # find container, run script, add/deduct material, return user dict
-    return "collect"
+    is_bad_file = script.material >= 20
+    author = db.get("User", script.user_id)
+    if author.id == user.id:
+        return jsonify({"msg": "script is yours"})
+
+    if script.collected(user_id):
+        return jsonify({"msg": "you've already collected this script"})
+
+    if user.has_space() == False:
+        return jsonify({"msg": "bag is full"})    
+
+    container = nest.load_container(user.id)
+    file_obj = create_file(user_ip, filename, text, row, col)
+    result = nest.run_file(user.id, file_obj)
+
+    if result["has_heart"] == None or result["has_heart"] == False:
+        user.form = 'ghost'
+        if is_bad_file:
+            author.add_material(user.pay_material(script.material))
+    else:
+        user.form = user.base_form
+        script.collect(user.id)
+        user.add_script()
+        if is_bad_file:
+            user.add_material(script.material)
+        else:
+            user.add_material(script.material)
+            author.add_material(script.material)
+
+    db.save()
+    return jsonify(result)
 
 @app.route('/drop', methods=["POST"])
 def drop():
@@ -76,12 +131,16 @@ def drop():
     row = request.json['row']
     col = request.json['col']
     user_ip = request.remote_addr
-    # find user, check use_script, get file_obj, get material, create script with user ID, ret script
-    user = db.get_user_by_ip(user_ip) # if ip changes mid session, user unable to drop file
+    
+    user = db.get_user_by_ip(user_ip) 
     if user is None:
         return jsonify({"msg": "ip switched"})
+    
+    if user.form == 'ghost':
+        return jsonify({"msg": "you're a ghost"})
+
     if user.use_script() is None:
-        return jsonify({"msg": "no scripts held"})
+        return jsonify({"msg": "bag is empty"})
     file_obj = create_file(user_ip, filename, text, row, col)
     material = nest.test_file(file_obj)
     
@@ -89,7 +148,9 @@ def drop():
               filename=filename, filetext=text, filetype=file_obj['filetype'],
               row=row, col=col, location=user.location)
     db.save()
-    return jsonify(new_file.to_dict())
+    res = user.to_dict()
+    del res['ip']
+    return jsonify({"user": res, "script" : new_file.to_dict()})
 
 @app.route('/start')
 def start():
@@ -101,22 +162,11 @@ def start():
     user = db.get_user_by_ip(user_ip)
     if user is None:
         return jsonify({"msg": "ip not found"})
-    if len(user.container_name) == 0:
-        container = nest.create_container(user.id)
-        user.container_name = container['name']
-    else:
-        container = nest.get_container(user.container_name)
-        if container is None:
-            container = nest.create_container(user.id)
-            user.container_name = container['name']
 
+    container = nest.load_container(user.id)
     user.touch()
-    return jsonify({"container_name":container['name']})
-    # if found, ensure user has no container name
-        # if no container name, create container
-        # if container name, check for container
-            # if no container found, create container, update name
-            # if container found, do nothing
+
+    return jsonify({"container_name":container.name})
 
 @app.route('/test', methods=["POST"])
 def test():
@@ -148,4 +198,4 @@ def handle_cors(response):
     return response
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=9000)
+    app.run(host='0.0.0.0', port=5000)

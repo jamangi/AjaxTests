@@ -14,14 +14,14 @@ class User(BaseModel):
     '''
     def __init__(self, *args, **kwargs):
         self.ip = ''
-        self.container_name = ''
 
         self.name = ''
         self.location = 'training'
+        self.base_form = 'dog'
         self.form = 'dog'
         self.character = 'titan'
-        self.scripts_held = 10
-        self.script_limit = 20
+        self.scripts_held = 8
+        self.script_limit = 10
         self.material = 0
 
         self.total_collected = 0
@@ -60,11 +60,20 @@ class User(BaseModel):
     	'''
     		Try to add script
     	'''
-    	if self.scripts_held < self.script_limit:
+    	if self.has_space():
     		self.scripts_held = self.scripts_held + 1
     		return self.scripts_held
     	else:
     		return None;
+
+    def has_space(self):
+        '''
+            Checks if scripts held at limit
+        '''
+        if self.scripts_held < self.script_limit:
+            return True
+        else:
+            return False
 
     def get_scripts(self):
     	'''
@@ -76,6 +85,18 @@ class User(BaseModel):
     		if v.user_id == self.id:
     			scripts.append(v)
     	return scripts
+
+    def pay_material(self, amount):
+        '''
+            Pay material
+        '''
+        if amount > self.material:
+            paid = self.material
+        else:
+            paid = amount
+
+        self.add_material(amount * -1)
+        return paid
 
     def use_material(self, amount):
     	'''

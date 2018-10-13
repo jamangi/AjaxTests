@@ -11,22 +11,28 @@ def copy_file(container_name, fileid, filename):
         print("Error in copy: {}".format(e))
         return None
 
-def extract_heart(container_name):
-    try:
-        output = subprocess.check_output(["docker","cp","{}:/home/heart".format(container_name),
-                                          "heartdump.txt"])
-        return True
-    except Exception as e:
-        return None
-
-
 def execute_file(container_name, filename, filetype):
+    '''
+        Execute file within container
+    '''
     try:
         output = subprocess.check_output(["docker", "exec", container_name, filetype, "/home/{}".format(filename)])
         if output:
             return output
         else:
             return True
+    except Exception as e:
+        return None
+
+def extract_heart(container_name):
+    '''
+        Searches for heart file in container.
+        TODO: make error catch more specific
+    '''
+    try:
+        output = subprocess.check_output(["docker","cp","{}:/home/heart".format(container_name),
+                                          "heartdump.txt"])
+        return True
     except Exception as e:
         return None
 

@@ -22,9 +22,12 @@ class Script(BaseModel):
         self.collected = {}
         super().__init__(*args, **kwargs)
 
+    def collected(self, user_id):
+        if self.collected.get(user_id) is None:
+            return False
+        else:
+            return True
+
     def collect(self, user_id):
-    	if self.collected.get(user_id) is None:
-    		self.collected[user_id] = True
-    		return True
-    	else:
-    		return None
+		self.collected[user_id] = True
+        self.save()
