@@ -165,10 +165,53 @@ def drop():
     del res['ip']
     return jsonify({"user": res, "script" : new_file.to_dict()})
 
+#TODO: @app.route('/backup')
+
+@app.route('/full_restore')
+def full_restore():
+    '''
+        Replace user container
+    '''
+    user_ip = request.remote_addr
+    user = db.get_user_by_ip(user_ip)
+    if user is None:
+        return jsonify({"msg": "ip not found"})
+    nest.remove_container(user.id)
+    container = nest.new_container(user.id)
+    user.form = user.base_form
+    db.save()
+    return jsonify({"container_name":container.name})
+
+@app.route('/heal')
+def heal():
+    '''
+        Puts heart file into user's container
+    '''
+    user_ip = request.remote_addr
+    user = db.get_user_by_ip(user_ip)
+    if user is None:
+        return jsonify({"msg": "ip not found"})
+    container = nest.load_container(user.id)
+    user.touch()
+
+    filename = "heart"
+    text = ";)" #TODO: change to random quote
+    row = 0
+    col = 0
+
+    file_obj = create_file(user_ip, filename, text, row, col)
+    result = nest.run_file(user.id, file_obj)
+    if result["has_heart"] == None or result["has_heart"] == False:
+        user.form = 'ghost'
+    else:
+        user.form = user.base_form
+    db.save()
+    return jsonify(result)
+
 @app.route('/start')
 def start():
     '''
-        Creates container, updates user container name
+        Creates user container
     '''
     # search database for ip:id
     user_ip = request.remote_addr
