@@ -53,9 +53,11 @@ def connect():
 def set_user():
     ''' Set username and doggy type of ip, adds ip if not found '''
     requires = ["name", "character"]
+    if not request.json:
+        return jsonify({"msg": "not json"}), 400
     for req in requires:
-        if req not in request.json:
-            return jsonify({"msg": "no {}".format(req)})
+        if not request.json.get(req):
+            return jsonify({"msg": "no {}".format(req)}), 400
 
     user_ip = request.remote_addr
     name = request.json["name"]
@@ -78,9 +80,11 @@ def set_user():
 def collect():
     ''' Execute inside user container and update database '''
     requires = ["fileid"]
+    if not request.json:
+        return jsonify({"msg": "not json"}), 400
     for req in requires:
-        if req not in request.json:
-            return jsonify({"msg": "no {}".format(req)})
+        if not request.json.get(req):
+            return jsonify({"msg": "no {}".format(req)}), 400
     fileid = request.json['fileid']
     user_ip = request.remote_addr
     user = db.get_user_by_ip(user_ip)
@@ -98,7 +102,7 @@ def collect():
     if author.id == user.id:
         return jsonify({"msg": "script is yours"})
 
-    if script.collected(user_id):
+    if script.collected(user.id):
         return jsonify({"msg": "you've already collected this script"})
 
     if user.has_space() == False:
@@ -129,9 +133,11 @@ def collect():
 def drop():
     ''' Test file and save it to database '''
     requires = ["filename", "filetext"]
+    if not request.json:
+        return jsonify({"msg": "not json"}), 400
     for req in requires:
-        if req not in request.json:
-            return jsonify({"msg": "no {}".format(req)})
+        if not request.json.get(req):
+            return jsonify({"msg": "no {}".format(req)}), 400
     filename = request.json['filename']
     text = request.json['filetext']
     row = request.json['row']
@@ -178,9 +184,11 @@ def start():
 @app.route('/test', methods=["POST"])
 def test():
     requires = ["filename", "filetext"]
+    if not request.json:
+        return jsonify({"msg": "not json"}), 400
     for req in requires:
-        if req not in request.json:
-            return jsonify({"msg": "no {}".format(req)})
+        if not request.json.get(req):
+            return jsonify({"msg": "no {}".format(req)}), 400
     print(request.json)
     filename = request.json['filename']
     text = request.json['filetext']
