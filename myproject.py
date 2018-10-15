@@ -38,7 +38,7 @@ def check_container():
 
 @app.route('/touch')
 def touch():
-    ''' Send alive signal '''
+''' Send alive signal '''
     user_ip = request.remote_addr
     user = db.get_user_by_ip(user_ip)
     if user is None:
@@ -145,7 +145,7 @@ def drop():
     user_ip = request.remote_addr
     user = db.get_user_by_ip(user_ip) 
     if user is None:
-        return jsonify({"msg": "ip not set"})
+        return jsonify({"msg": "ip not set"}), 401
     user.touch()
 
     requires = ["filename", "filetext"]
@@ -183,7 +183,7 @@ def dump_scripts():
     user_ip = request.remote_addr
     user = db.get_user_by_ip(user_ip) 
     if user is None:
-        return jsonify({"msg": "ip not set"})
+        return jsonify({"msg": "ip not set"}), 401
     user.touch()
 
     f = request.files['file']
@@ -217,7 +217,7 @@ def edit():
     user_ip = request.remote_addr
     user = db.get_user_by_ip(user_ip)
     if user is None:
-        return jsonify({"msg": "ip not set"})
+        return jsonify({"msg": "ip not set"}), 401
 
     if not request.json:
         return jsonify({"msg": "not json"}), 400
@@ -258,7 +258,7 @@ def full_restore():
     user_ip = request.remote_addr
     user = db.get_user_by_ip(user_ip)
     if user is None:
-        return jsonify({"msg": "ip not set"})
+        return jsonify({"msg": "ip not set"}), 401
     nest.remove_container(user.id)
     container = nest.new_container(user.id)
     user.form = user.character
@@ -274,7 +274,7 @@ def heal():
     user_ip = request.remote_addr
     user = db.get_user_by_ip(user_ip)
     if user is None:
-        return jsonify({"msg": "ip not set"})
+        return jsonify({"msg": "ip not set"}), 401
     container = nest.load_container(user.id)
 
     filename = "heart"
@@ -325,7 +325,7 @@ def run_script():
     
     user = db.get_user_by_ip(user_ip) 
     if user is None:
-        return jsonify({"msg": "ip not set"}), 400
+        return jsonify({"msg": "ip not set"}), 401
     
     user.touch()
     container = nest.load_container(user.id)
@@ -349,7 +349,7 @@ def start():
     user_ip = request.remote_addr
     user = db.get_user_by_ip(user_ip)
     if user is None:
-        return jsonify({"msg": "ip not set"})
+        return jsonify({"msg": "ip not set"}), 401
 
     container = nest.load_container(user.id)
     user.touch()
