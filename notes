@@ -4,6 +4,24 @@ resources
 
 https://stackoverflow.com/questions/3393612/run-certain-code-every-n-seconds
 
+#########################
+Routes 
+
+check
+collect
+drop
+dump
+edit
+full_restore
+heal
+load
+run
+set_user
+start
+status
+test
+touch
+
 ##############################
 Curl from localhost
 

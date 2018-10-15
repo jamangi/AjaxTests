@@ -129,7 +129,7 @@ def test_file(file_obj):
     exec_good = fundamentals.execute_file(c_name, file_name, file_type)
     print()
 
-    if exec_good:
+    if exec_good is not None:
         status = "success"
     else:
         status = "failure"
@@ -159,7 +159,7 @@ def test_file(file_obj):
     else:
         material = 10
 
-    if exec_good:
+    if exec_good is not None:
         if (not has_heart) or (not responding):
             material *= 10
     else:

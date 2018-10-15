@@ -46,7 +46,7 @@ def execute_file(container_name, filename, filetype):
         if output:
             return output
         else:
-            return True
+            return False
     except Exception as e:
         return None
 

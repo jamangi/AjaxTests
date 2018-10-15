@@ -18,11 +18,8 @@ class User(BaseModel):
 
         self.name = ''
         self.location = 'training'
-        self.base_form = 'dog'
-        self.form = 'dog'
         self.character = 'titan'
-        self.scripts_held = 8
-        self.script_limit = 10
+        self.form = 'titan'
         self.material = 0
 
         self.total_collected = 0
@@ -57,24 +54,6 @@ class User(BaseModel):
     		self.material = 0
     	return self.material
 
-    def add_script(self):
-    	'''
-    		Try to add script
-    	'''
-    	if self.has_space():
-    		self.scripts_held = self.scripts_held + 1
-    		return self.scripts_held
-    	else:
-    		return None;
-
-    def has_space(self):
-        '''
-            Checks if scripts held at limit
-        '''
-        if self.scripts_held < self.script_limit:
-            return True
-        else:
-            return False
 
     def get_scripts(self):
     	'''
@@ -107,13 +86,3 @@ class User(BaseModel):
     		return None
     	else:
     		self.material = self.material - amount
-
-    def use_script(self):
-    	'''
-    		Try to use script
-    	'''
-    	if self.scripts_held > 0:
-    		self.scripts_held = self.scripts_held - 1
-    		return self.scripts_held
-    	else:
-    		return None

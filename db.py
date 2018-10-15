@@ -2,6 +2,7 @@ import models
 from models.base_model import BaseModel
 from models.user import User
 from models.script import Script
+from models.map import Map
 
 def create(classname, **kwargs):
 	'''
