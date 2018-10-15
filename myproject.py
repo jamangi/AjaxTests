@@ -37,8 +37,8 @@ def check_container():
         return jsonify({"container_name": container.name})
 
 @app.route('/touch')
-''' Send alive signal '''
 def touch():
+    ''' Send alive signal '''
     user_ip = request.remote_addr
     user = db.get_user_by_ip(user_ip)
     if user is None:
