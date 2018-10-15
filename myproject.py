@@ -33,8 +33,9 @@ def check_container():
         container = nest.user_container(user.id)
         if container is None:
             return jsonify({"msg": "no container"})
-
-        return jsonify({"container_name": container.name})
+        ret = user.to_dict()
+        del ret["ip"]
+        return jsonify({"user":ret, "container_name": container.name})
 
 @app.route('/touch')
 def touch():
@@ -79,7 +80,7 @@ def set_user():
     else:
         ret = user.to_dict()
         del ret["ip"]
-        return jsonify(ret)
+        return jsonify({"user": ret})
 
 @app.route('/collect', methods=["POST"])
 def collect():
@@ -137,7 +138,9 @@ def collect():
             author.add_material(script.material)
 
     db.save()
-    return jsonify(result)
+    ret = user.to_dict()
+    del ret["ip"]
+    return jsonify({"user": ret})
 
 @app.route('/drop', methods=["POST"])
 def drop():
@@ -190,7 +193,7 @@ def dump_scripts():
     filename = f.filename
     row = 0
     col = 0
-    text = f.read()
+    text = f.read().decode("utf-8")
 
     if user.form == 'ghost':
         return jsonify({"msg": "you're a ghost"})
@@ -246,7 +249,9 @@ def edit():
     script.material = material
 
     db.save()
-    return jsonify(script.to_dict())
+    ret = user.to_dict()
+    del ret["ip"]
+    return jsonify({"user": ret, "script": script.to_dict()})
 
 #TODO: @app.route('/backup')
 
@@ -264,7 +269,9 @@ def full_restore():
     user.form = user.character
     db.save()
     user.touch()
-    return jsonify({"container_name":container.name})
+    ret = user.to_dict()
+    del ret["ip"]
+    return jsonify({"user": ret, "container_name":container.name})
 
 @app.route('/heal')
 def heal():
@@ -290,7 +297,9 @@ def heal():
         user.form = user.character
     db.save()
     user.touch()
-    return jsonify(result)
+    ret = user.to_dict()
+    del ret["ip"]
+    return jsonify({"user": ret})
 
 @app.route('/load')
 @app.route('/load/<location>')
@@ -337,7 +346,9 @@ def run_script():
     else:
         user.form = user.character
     db.save()
-    return jsonify(result)
+    ret = user.to_dict()
+    del ret["ip"]
+    return jsonify({"user": ret})
 
 
 @app.route('/start')
@@ -354,7 +365,9 @@ def start():
     container = nest.load_container(user.id)
     user.touch()
 
-    return jsonify({"container_name":container.name})
+    ret = user.to_dict()
+    del ret["ip"]
+    return jsonify({"user": ret, "container_name":container.name})
 
 @app.route('/test', methods=["POST"])
 def test():
