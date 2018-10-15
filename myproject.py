@@ -38,7 +38,7 @@ def check_container():
 
 @app.route('/touch')
 def touch():
-''' Send alive signal '''
+    ''' Send alive signal '''
     user_ip = request.remote_addr
     user = db.get_user_by_ip(user_ip)
     if user is None:
