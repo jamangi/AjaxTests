@@ -130,8 +130,6 @@ def run_file(user_id, file_obj):
     file_name = file_obj['filename']
     file_type = file_obj['filetype']
 
-    copy_good = fundamentals.copy_file(c_name, file_id, file_name)
-
     alive = check_container(c_name)
     if alive:
         pass
@@ -140,6 +138,7 @@ def run_file(user_id, file_obj):
         container = new_container(user_id)
         c_name = container.name
 
+    copy_good = fundamentals.copy_file(c_name, file_id, file_name)
     output = fundamentals.execute_file(c_name, file_name, file_type)
     if output:
         output = output.decode('utf-8')
