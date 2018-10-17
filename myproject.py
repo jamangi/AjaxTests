@@ -151,7 +151,7 @@ def drop():
         return jsonify({"msg": "ip not set"}), 401
     user.touch()
 
-    requires = ["filename", "filetext"]
+    requires = ["filename", "filetext", "row", "col"];
     if not request.json:
         return jsonify({"msg": "not json"}), 400
     for req in requires:
