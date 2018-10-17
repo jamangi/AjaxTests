@@ -123,7 +123,8 @@ def run_file(user_id, file_obj):
     '''
         Run a file within container, return output and hasHeart
     '''
-    c_name = NEST.get(user_id).name
+    container = NEST.get(user_id)
+    c_name = container.name
     print()
     print("User {}: {}".format(user_id, c_name))
     file_id = file_obj['fileid']
