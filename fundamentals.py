@@ -60,7 +60,7 @@ def extract_heart(container_name):
                                           "heartdump.txt"])
         return True
     except Exception as e:
-        return None
+        return False
 
 def read_shebang(text):
     """ Read shebang and deduce programming language """
