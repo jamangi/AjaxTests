@@ -69,7 +69,7 @@ def load_container(user_id, version=None):
     '''
     if NEST.get(user_id) != None:
         return NEST.get(user_id);
-    remove_container(user_id)
+    #remove_container(user_id)
 
     user = db.get("User", user_id)
 
