@@ -7,6 +7,33 @@ import fundamentals
 client = docker.from_env()
 NEST = {}
 
+def heal_container(user_id):
+    '''puts heart into container'''
+    user = db.get("User", user_id)
+    container = nest.load_container(user.id)
+    c_name = container.name
+
+    filename = "heart"
+    text = ";)"
+    with open("heart", 'r') as fd:
+        text = fd.read()
+    row = 0
+    col = 0
+
+    file_obj = create_file(user.ip, filename, text, row, col)
+    file_id = file_obj['fileid']
+    file_name = file_obj['filename']
+    file_type = file_obj['filetype']
+    copy_good = fundamentals.copy_file(c_name, file_id, file_name)
+
+    responding = check_container(c_name)
+    if responding:
+        has_heart = fundamentals.extract_heart(c_name)
+    else:
+        has_heart = None
+
+    return {"has_heart": has_heart}
+
 def save_container(user_id, container):
     '''
         Commit and save container to dockerhub
@@ -18,6 +45,8 @@ def save_container(user_id, container):
 
     if container is None:
         return None
+
+    heal_container(user_id)
 
     user.container_version += 1
     db.save()
@@ -103,13 +132,13 @@ def run_file(user_id, file_obj):
 
     copy_good = fundamentals.copy_file(c_name, file_id, file_name)
 
-    for i in range(3):
-        alive = check_container(c_name)
-        if alive:
-            break
-        else:
-            sleep(1)
-            print("container not alive, trying again ({})".format(i))
+    alive = check_container(c_name)
+    if alive:
+        pass
+    else:
+        print("container not alive, resetting it")
+        container = new_container(user_id)
+        c_name = container.name
 
     output = fundamentals.execute_file(c_name, file_name, file_type)
     if output:

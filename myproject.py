@@ -292,17 +292,11 @@ def heal():
     user = db.get_user_by_ip(user_ip)
     if user is None:
         return jsonify({"msg": "ip not set"}), 401
-    container = nest.load_container(user.id)
-
-    filename = "heart"
-    text = ";)" #TODO: change to random quote
-    row = 0
-    col = 0
-
-    file_obj = create_file(user_ip, filename, text, row, col)
-    result = nest.run_file(user.id, file_obj)
-    if result["has_heart"] == None or result["has_heart"] == False:
+    has_heart = nest.heal_container(user.id)
+    if has_heart == False:
         user.form = 'ghost'
+    elif has_heart == None:
+        user.form = user.form
     else:
         user.form = user.character
     db.save()
