@@ -81,7 +81,7 @@ def load_container(user_id, version=None):
         print("pulling image from repo")
         img = client.images.pull(repo, tag=str(version))
         print("client.images.pull: {}".format(img))
-        container = client.containers.run(full, detach=True)
+        container = client.containers.run(full, command="bash heart", detach=True)
         NEST[user_id] = container
         print("successful pull: {}".format(user_id))
         return container
@@ -135,8 +135,12 @@ def run_file(user_id, file_obj):
         pass
     else:
         print("container not alive, resetting it")
-        container = new_container(user_id)
-        c_name = container.name
+        container.start()
+        if check_container(c_name):
+            print("container awakened")
+        else:
+            container = new_container(user_id)
+            c_name = container.name
 
     copy_good = fundamentals.copy_file(c_name, file_id, file_name)
     output = fundamentals.execute_file(c_name, file_name, file_type)
