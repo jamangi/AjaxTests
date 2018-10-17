@@ -30,6 +30,7 @@ def check_container():
     if user is None:
         return jsonify({"msg": "no user"})
     else:
+        user.touch()
         container = nest.user_container(user.id)
         if container is None:
             return jsonify({"msg": "no container"})
@@ -228,6 +229,7 @@ def edit():
     if user is None:
         return jsonify({"msg": "ip not set"}), 401
 
+    user.touch()
     if not request.json:
         return jsonify({"msg": "not json"}), 400
 
@@ -354,10 +356,13 @@ def run_script():
     result['filename'] = filename;
     result['filetext'] = text;
 
-    if result["has_heart"] == None or result["has_heart"] == False:
+    if result["has_heart"] == False:
         user.form = 'ghost'
+    else if result["has_heart"] == None:
+        user.form = user.form
     else:
         user.form = user.character
+
     db.save()
     ret = user.to_dict()
     del ret["ip"]

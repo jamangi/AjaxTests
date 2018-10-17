@@ -1,4 +1,5 @@
 import docker
+from time import sleep
 
 import db
 import fundamentals
@@ -38,6 +39,9 @@ def load_container(user_id, version=None):
     user = db.get("User", user_id)
     if user is None:
         return None
+
+    if NEST.get(user_id) != None:
+        return NEST.get(user_id);
 
     remove_container(user_id)
     repo = "rubyshadows/{}".format(user_id)
@@ -98,6 +102,15 @@ def run_file(user_id, file_obj):
     file_type = file_obj['filetype']
 
     copy_good = fundamentals.copy_file(c_name, file_id, file_name)
+
+    for i in range(3):
+        alive = check_container(c_name)
+        if alive:
+            break
+        else:
+            sleep(1)
+            print("container not alive, trying again ({})".format(i))
+
     output = fundamentals.execute_file(c_name, file_name, file_type)
     if output:
         output = output.decode('utf-8')
