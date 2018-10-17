@@ -10,7 +10,9 @@ NEST = {}
 def heal_container(user_id):
     '''puts heart into container'''
     user = db.get("User", user_id)
-    container = load_container(user.id)
+    container = user_container(user_id)
+    if container is None:
+        return
     c_name = container.name
 
     filename = "heart"
