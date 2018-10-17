@@ -146,7 +146,10 @@ def run_file(user_id, file_obj):
     check_container(c_name)
     copy_good = fundamentals.copy_file(c_name, file_id, file_name)
     print("before execute file {}".format(file_name))
-    check_container(c_name)
+    if not check_container(c_name):
+        print("after container.start()")
+        container.start()
+        check_container(c_name)
     output = fundamentals.execute_file(c_name, file_name, file_type)
     if output:
         output = output.decode('utf-8')
