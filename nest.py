@@ -65,14 +65,12 @@ def load_container(user_id, version=None):
         TODO: Pull container from dockerhub and return it
         If none on dockerhub, create new one
     '''
-    user = db.get("User", user_id)
-    if user is None:
-        return None
-
     if NEST.get(user_id) != None:
         return NEST.get(user_id);
-
     remove_container(user_id)
+
+    user = db.get("User", user_id)
+
     repo = "rubyshadows/{}".format(user_id)
     if version is None:
         version = user.container_version
