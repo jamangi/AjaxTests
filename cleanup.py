@@ -6,7 +6,7 @@ import nest
 import db
 
 seconds_till_scan = 10
-seconds_till_inactive = 200
+seconds_till_inactive = 59
 inactive = []
 x = datetime.datetime(1, 1, 1, second=seconds_till_inactive)
 y = datetime.datetime(1, 1, 1, second=0)
