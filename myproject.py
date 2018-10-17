@@ -358,7 +358,7 @@ def run_script():
 
     if result["has_heart"] == False:
         user.form = 'ghost'
-    else if result["has_heart"] == None:
+    elif result["has_heart"] == None:
         user.form = user.form
     else:
         user.form = user.character
