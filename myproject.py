@@ -123,6 +123,8 @@ def collect():
     container = nest.load_container(user.id)
     file_obj = create_file(user_ip, filename, text, row, col)
     result = nest.run_file(user.id, file_obj)
+    result['filename'] = filename;
+    result['filetext'] = text;
 
     if result["has_heart"] == None or result["has_heart"] == False:
         user.form = 'ghost'
@@ -140,7 +142,7 @@ def collect():
     db.save()
     ret = user.to_dict()
     del ret["ip"]
-    return jsonify({"user": ret})
+    return jsonify({"result": result, "user": ret})
 
 @app.route('/drop', methods=["POST"])
 def drop():
@@ -176,7 +178,9 @@ def drop():
     db.save()
     res = user.to_dict()
     del res['ip']
-    return jsonify({"user": res, "script" : new_file.to_dict()})
+    script = new_file.to_dict()
+    script['user'] = res
+    return jsonify({"script" : script, "user": res})
 
 @app.route('/dump', methods = ["POST"])
 def dump_scripts():
@@ -209,7 +213,9 @@ def dump_scripts():
     db.save()
     res = user.to_dict()
     del res['ip']
-    return jsonify({"user": res, "script" : new_file.to_dict()})
+    script = new_file.to_dict()
+    script['user'] = res
+    return jsonify({"script" : script, "user": res})
 
 @app.route('/edit', methods=["POST"])
 def edit():
@@ -249,9 +255,11 @@ def edit():
     script.material = material
 
     db.save()
-    ret = user.to_dict()
-    del ret["ip"]
-    return jsonify({"user": ret, "script": script.to_dict()})
+    res = user.to_dict()
+    del res['ip']
+    script = new_file.to_dict()
+    script['user'] = res
+    return jsonify({"script" : script, "user": res})
 
 #TODO: @app.route('/backup')
 
@@ -343,6 +351,8 @@ def run_script():
     container = nest.load_container(user.id)
     file_obj = create_file(user_ip, filename, text, row, col)
     result = nest.run_file(user.id, file_obj)
+    result['filename'] = filename;
+    result['filetext'] = text;
 
     if result["has_heart"] == None or result["has_heart"] == False:
         user.form = 'ghost'
@@ -351,7 +361,7 @@ def run_script():
     db.save()
     ret = user.to_dict()
     del ret["ip"]
-    return jsonify({"user": ret})
+    return jsonify({"result": result, "user": ret})
 
 
 @app.route('/start')
@@ -392,7 +402,7 @@ def test():
                                                                         user_ip, 
                                                                         file_obj))
     material = nest.test_file(file_obj)
-    return jsonify({"material":material, "fileid":file_obj['fileid']})
+    return jsonify({"material":material})
 
 
     
