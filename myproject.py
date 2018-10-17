@@ -313,7 +313,7 @@ def load_scripts(location=None):
         user = db.get("User", script.user_id)
         ret = user.to_dict();
         del ret['ip']
-        s["user"] = ret()
+        s["user"] = ret
         all_scripts.append(s)
     return jsonify({"scripts": all_scripts})
 
