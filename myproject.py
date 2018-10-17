@@ -48,7 +48,7 @@ def touch():
         user.touch()
         ret = user.to_dict()
         del ret["ip"]
-        return jsonify(ret)
+        return jsonify({"user": ret})
 
 @app.route('/set', methods=["POST"])
 def set_user():
