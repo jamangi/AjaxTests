@@ -7,12 +7,8 @@ import fundamentals
 client = docker.from_env()
 NEST = {}
 
-def heal_container(user_id):
+def heal_container(container):
     '''puts heart into container'''
-    user = db.get("User", user_id)
-    container = user_container(user_id)
-    if container is None:
-        return
     c_name = container.name
 
     filename = "heart"
@@ -22,7 +18,7 @@ def heal_container(user_id):
     row = 0
     col = 0
 
-    file_obj = fundamentals.create_file(user.ip, filename, text, row, col)
+    file_obj = fundamentals.create_file("1", filename, text, row, col)
     file_id = file_obj['fileid']
     file_name = file_obj['filename']
     file_type = file_obj['filetype']
@@ -48,7 +44,7 @@ def save_container(user_id, container):
     if container is None:
         return None
 
-    heal_container(user_id)
+    heal_container(container)
 
     user.container_version += 1
     db.save()

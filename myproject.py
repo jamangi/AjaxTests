@@ -292,7 +292,11 @@ def heal():
     user = db.get_user_by_ip(user_ip)
     if user is None:
         return jsonify({"msg": "ip not set"}), 401
-    has_heart = nest.heal_container(user.id)
+
+    container = nest.user_container(user.id)
+    if container == None:
+        container = nest.new_container(user.id)
+    has_heart = nest.heal_container(container)
     if has_heart == False:
         user.form = 'ghost'
     elif has_heart == None:
