@@ -221,6 +221,7 @@ def test_file(file_obj):
 def check_container(container_name):
     """ Checks whether container is running """
     container = client.containers.get(container_name)
+    print("check_container: {}".format(container.status))
     if container.status == "running":
         return True
     else:
