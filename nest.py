@@ -131,26 +131,13 @@ def run_file(user_id, file_obj):
     file_name = file_obj['filename']
     file_type = file_obj['filetype']
 
-    alive = check_container(c_name)
-    if alive:
-        pass
-    else:
-        print("container not alive, resetting it")
-        container.start()
-        if check_container(c_name):
-            print("container awakened")
-        else:
-            container = new_container(user_id)
-            c_name = container.name
 
-    print("before copy file {}".format(file_name))
-    check_container(c_name)
     copy_good = fundamentals.copy_file(c_name, file_id, file_name)
     print("before execute file {}".format(file_name))
     if not check_container(c_name):
-        print("after container.start()")
-        container.start()
-        check_container(c_name)
+        print("container not alive, resetting it")
+        container = new_container(user_id)
+        c_name = container.name
     output = fundamentals.execute_file(c_name, file_name, file_type)
     if output:
         output = output.decode('utf-8')

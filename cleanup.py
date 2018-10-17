@@ -5,11 +5,12 @@ from threading import Timer
 import nest
 import db
 
-seconds_till_scan = 10
+seconds_till_scan = 30
 seconds_till_inactive = 59
+hours_till_inactive = 1
 inactive = []
-x = datetime.datetime(1, 1, 1, second=seconds_till_inactive)
-y = datetime.datetime(1, 1, 1, second=0)
+x = datetime.datetime(1, 1, 1, hour=hours_till_inactive)
+y = datetime.datetime(1, 1, 1, hour=0)
 threshold = x - y
 
 def scan_for_inactive():
