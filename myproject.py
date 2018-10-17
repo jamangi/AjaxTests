@@ -310,7 +310,8 @@ def load_scripts(location=None):
     all_scripts = []
     for script in db.get_scripts(location):
         s = script.to_dict()
-        s["username"] = db.get("User", script.user_id).name
+        user = db.get("User", script.user_id)
+        s["user"] = user.to_dict()
         all_scripts.append(s)
     return jsonify({"scripts": all_scripts})
 
