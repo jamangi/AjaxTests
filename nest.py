@@ -20,7 +20,7 @@ def heal_container(user_id):
     row = 0
     col = 0
 
-    file_obj = create_file(user.ip, filename, text, row, col)
+    file_obj = fundamentals.create_file(user.ip, filename, text, row, col)
     file_id = file_obj['fileid']
     file_name = file_obj['filename']
     file_type = file_obj['filetype']
