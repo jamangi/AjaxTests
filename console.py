@@ -48,10 +48,10 @@ class DockerHeartsCommand(cmd.Cmd):
             return
         try:
             args = shlex.split(args)
-            kwargs = self.parse_input(args)
+            # kwargs = self.parse_input(args)
             new_instance = eval(args[0])()
-            for key, value in kwargs.items():
-                setattr(new_instance, key, value)
+            # for key, value in kwargs.items():
+                # setattr(new_instance, key, value)
             new_instance.save()
             print(new_instance.id)
 
